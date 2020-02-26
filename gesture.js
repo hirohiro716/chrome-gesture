@@ -3,7 +3,7 @@ var isDown;
 var isLeft;
 var isRight;
 var previousPoints = [];
-$('body').on('mousemove', function(event) {
+$('html').on('mousemove', '*', function(event) {
     if (isStartedGesture) {
         var xDifference = Math.abs(event.pageX - rightClickPoint.x);
         var yDifference = Math.abs(event.pageY - rightClickPoint.y);
@@ -36,7 +36,7 @@ $('body').on('mousemove', function(event) {
 var isStartedGesture;
 var rightClickPoint;
 var rightClickTimestamp;
-$('body').on('mousedown', function(event) {
+$('html').on('mousedown', '*', function(event) {
     isStartedGesture = false;
     isUp = false;
     isDown = false;
@@ -48,7 +48,7 @@ $('body').on('mousedown', function(event) {
     rightClickPoint = {x: event.pageX, y: event.pageY};
     rightClickTimestamp = new Date().getTime();
 });
-$('body').on('contextmenu', function(event) {
+$('html').on('contextmenu', '*', function(event) {
     for (var index = 0; index < previousPoints.length; index++) {
         var timestamp = previousPoints[index].timestamp;
         var point = previousPoints[index].point;
@@ -61,11 +61,14 @@ $('body').on('contextmenu', function(event) {
         }
     }
 });
-$('body').on('mouseup', function(event) {
-	isStartedGesture = false;
+$('html').on('mouseup', '*', function(event) {
     if (event.button != 2) {
         return;
     }
+	if (isStartedGesture == false) {
+		return;
+	}
+	isStartedGesture = false;
     if (isDown && isRight) {
         chrome.runtime.sendMessage('closetab');
         return;
