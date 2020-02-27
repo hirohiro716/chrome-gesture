@@ -69,19 +69,19 @@ $(window).on('mouseup', function(event) {
 		return;
 	}
 	isStartedGesture = false;
-    if (isDown && isRight) {
+    if (isUp == false && isDown && isLeft == false && isRight) {
         chrome.runtime.sendMessage('closetab');
         return;
     }
-    if (isDown) {
+    if (isUp == false && isDown && isLeft == false && isRight == false) {
         chrome.runtime.sendMessage('newtab');
         return;
     }
-    if (isLeft) {
+    if (isUp == false && isDown == false && isLeft && isRight == false) {
         history.back();
         return;
     }
-    if (isRight) {
+    if (isUp == false && isDown == false && isLeft == false && isRight) {
         history.forward();
         return;
     }
