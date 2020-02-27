@@ -3,7 +3,7 @@ var isDown;
 var isLeft;
 var isRight;
 var previousPoints = [];
-$('html').on('mousemove', 'body', function(event) {
+$(window).on('mousemove', function(event) {
     if (isStartedGesture) {
         var xDifference = Math.abs(event.pageX - rightClickPoint.x);
         var yDifference = Math.abs(event.pageY - rightClickPoint.y);
@@ -36,7 +36,7 @@ $('html').on('mousemove', 'body', function(event) {
 var isStartedGesture;
 var rightClickPoint;
 var rightClickTimestamp;
-$('html').on('mousedown', 'body', function(event) {
+$(window).on('mousedown', function(event) {
     isStartedGesture = false;
     isUp = false;
     isDown = false;
@@ -48,7 +48,7 @@ $('html').on('mousedown', 'body', function(event) {
     rightClickPoint = {x: event.pageX, y: event.pageY};
     rightClickTimestamp = new Date().getTime();
 });
-$('html').on('contextmenu', 'body', function(event) {
+$(window).on('contextmenu', function(event) {
     for (var index = 0; index < previousPoints.length; index++) {
         var timestamp = previousPoints[index].timestamp;
         var point = previousPoints[index].point;
@@ -61,7 +61,7 @@ $('html').on('contextmenu', 'body', function(event) {
         }
     }
 });
-$('html').on('mouseup', 'body', function(event) {
+$(window).on('mouseup', function(event) {
     if (event.button != 2) {
         return;
     }
