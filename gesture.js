@@ -74,8 +74,10 @@ $(window).on('contextmenu', function(event) {
     	}
     } else {
     	// Linux and Mac
-        event.preventDefault();
     	judgmentMethod();
+    	if (isStartedGesture) {
+            event.preventDefault();
+    	}
     }
 });
 $(window).on('mouseup', function(event) {
