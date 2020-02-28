@@ -1,3 +1,4 @@
+var isStartedGesture;
 var isUp;
 var isDown;
 var isLeft;
@@ -33,11 +34,24 @@ $(window).on('mousemove', function(event) {
         }
     }
 });
-var isStartedGesture;
 var rightClickPoint;
 var rightClickTimestamp;
+function judgmentMethod() {
+    for (var index = 0; index < previousPoints.length; index++) {
+        var timestamp = previousPoints[index].timestamp;
+        var point = previousPoints[index].point;
+        if (timestamp + 100 >= rightClickTimestamp) {
+            if (point.x != rightClickPoint.x || point.y != rightClickPoint.y) {
+                isStartedGesture = true;
+                break;
+            }
+        }
+    }
+};
+var isExecutedGesture; // For windows
+var isWindows = (window.navigator.userAgent.toLowerCase().indexOf('windows') > -1);
 $(window).on('mousedown', function(event) {
-    isStartedGesture = false;
+    isExecutedGesture = false;
     isUp = false;
     isDown = false;
     isLeft = false;
@@ -47,18 +61,21 @@ $(window).on('mousedown', function(event) {
     }
     rightClickPoint = {x: event.pageX, y: event.pageY};
     rightClickTimestamp = new Date().getTime();
+	// Windows only
+    if (isWindows) {
+    	judgmentMethod();
+    }
 });
 $(window).on('contextmenu', function(event) {
-    for (var index = 0; index < previousPoints.length; index++) {
-        var timestamp = previousPoints[index].timestamp;
-        var point = previousPoints[index].point;
-        if (timestamp + 100 >= rightClickTimestamp) {
-            if (point.x != rightClickPoint.x || point.y != rightClickPoint.y) {
-                isStartedGesture = true;
-                event.preventDefault();
-                break;
-            }
-        }
+    if (isWindows) {
+    	// Windows
+    	if (isExecutedGesture) {
+            event.preventDefault();
+    	}
+    } else {
+    	// Linux and Mac
+        event.preventDefault();
+    	judgmentMethod();
     }
 });
 $(window).on('mouseup', function(event) {
@@ -69,6 +86,7 @@ $(window).on('mouseup', function(event) {
 		return;
 	}
 	isStartedGesture = false;
+    isExecutedGesture = true;
     if (isUp == false && isDown && isLeft == false && isRight) {
         chrome.runtime.sendMessage('closetab');
         return;
